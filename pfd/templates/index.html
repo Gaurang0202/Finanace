@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Wealthr — Clarity for your money{% endblock %}
+{% block guest_content %}
+
+<section class="cine-hero">
+  <div class="cine-hero-content">
+    <span class="cine-eyebrow"><span class="dot"></span> THE FUTURE OF PERSONAL FINANCE</span>
+    <h1 class="cine-headline">Clarity you can<br><span class="accent-word">actually feel.</span></h1>
+    <p class="cine-subtext">
+      Income, expenses, budgets and goals — brought into one calm, intelligent dashboard.
+      No spreadsheets. No guesswork. Just where your money actually goes.
+    </p>
+    <div class="cine-cta-row">
+      <a href="{{ url_for('auth.register') }}" class="btn btn-hero-primary">Get started free</a>
+      <a href="#story" class="btn btn-hero-ghost">See how it works</a>
+    </div>
+  </div>
+
+  <div class="cine-hero-preview">
+    <div class="glass-panel p-4">
+      <div class="d-flex justify-content-between mb-3">
+        <div>
+          <div class="section-sub mb-1">This month's balance</div>
+          <div class="figure fs-2 fw-bold">₹<span data-count-to="42180">0</span></div>
+        </div>
+        <span class="category-pill bg-teal-soft"><i class="fa-solid fa-arrow-up"></i> On track</span>
+      </div>
+      <div class="progress mb-2"><div class="progress-bar bg-success" style="width: 62%"></div></div>
+      <div class="d-flex justify-content-between small mb-0">
+        <span>Budget used</span><span>62%</span>
+      </div>
+    </div>
+  </div>
+
+  <a href="#story" class="scroll-indicator"><span>Scroll</span><i class="fa-solid fa-chevron-down"></i></a>
+</section>
+
+<section class="story-section" id="story">
+  <span class="story-eyebrow reveal">THE NEXT GENERATION</span>
+  <h2 class="story-headline reveal">Everything you need.<br>Nothing you don't.</h2>
+
+  <div class="story-feature-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <i class="fa-solid fa-chart-pie"></i>
+      <h5>Budgets that warn you early</h5>
+      <p style="color:var(--text-muted)" class="mb-0">Get notified at 80% and 100% of any category budget, before you overspend.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <i class="fa-solid fa-piggy-bank"></i>
+      <h5>Goals you can actually track</h5>
+      <p style="color:var(--text-muted)" class="mb-0">Set a target, log contributions, and watch the progress bar fill up.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <h5>Insights, explained simply</h5>
+      <p style="color:var(--text-muted)" class="mb-0">Plain-English analysis of your spending trends and savings rate — no jargon.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-4">
+      <i class="fa-solid fa-file-export"></i>
+      <h5>Reports in one click</h5>
+      <p style="color:var(--text-muted)" class="mb-0">Export monthly or yearly summaries as PDF, Excel or CSV whenever you need them.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-5">
+      <i class="fa-solid fa-shield-halved"></i>
+      <h5>Private by design</h5>
+      <p style="color:var(--text-muted)" class="mb-0">Hashed passwords, CSRF protection, and data scoped strictly to your account.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-6">
+      <i class="fa-solid fa-moon"></i>
+      <h5>Light or dark, your call</h5>
+      <p style="color:var(--text-muted)" class="mb-0">A theme that's easy on the eyes any time of day.</p>
+    </div>
+  </div>
+</section>
+
+<section class="story-section">
+  <span class="story-eyebrow reveal">DESIGNED FOR CLARITY</span>
+  <h2 class="story-headline reveal">A dashboard that answers<br>the only question that matters.</h2>
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-6 reveal">
+      <div class="d-flex gap-3 mb-4">
+        <div class="goal-icon flex-shrink-0"><i class="fa-solid fa-eye"></i></div>
+        <div>
+          <h5 class="mb-1">Where am I?</h5>
+          <p style="color:var(--text-muted)" class="mb-0">Your balance, this month's income and expenses, and your savings rate — front and center, the moment you log in.</p>
+        </div>
+      </div>
+      <div class="d-flex gap-3 mb-4">
+        <div class="goal-icon flex-shrink-0"><i class="fa-solid fa-bolt"></i></div>
+        <div>
+          <h5 class="mb-1">What should I do next?</h5>
+          <p style="color:var(--text-muted)" class="mb-0">Budget alerts and personalized insights surface the one thing worth your attention today.</p>
+        </div>
+      </div>
+      <div class="d-flex gap-3">
+        <div class="goal-icon flex-shrink-0"><i class="fa-solid fa-list-check"></i></div>
+        <div>
+          <h5 class="mb-1">What can I do?</h5>
+          <p style="color:var(--text-muted)" class="mb-0">Log a transaction, set a budget, or start a goal — all one click from anywhere in the app.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 reveal reveal-delay-2">
+      <div class="glass-panel p-4" style="background:var(--surface); border-color:var(--border);">
+        <div class="d-flex justify-content-between small mb-2"><span style="color:var(--text-muted)">Food</span><span class="figure">₹6,200</span></div>
+        <div class="progress mb-3"><div class="progress-bar bg-warning" style="width:82%"></div></div>
+        <div class="d-flex justify-content-between small mb-2"><span style="color:var(--text-muted)">Transport</span><span class="figure">₹2,450</span></div>
+        <div class="progress mb-3"><div class="progress-bar bg-success" style="width:48%"></div></div>
+        <div class="d-flex justify-content-between small mb-2"><span style="color:var(--text-muted)">Entertainment</span><span class="figure">₹1,180</span></div>
+        <div class="progress"><div class="progress-bar bg-danger" style="width:104%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band reveal">
+  <h2>Ready to see where your money goes?</h2>
+  <p>Create a free account and have your dashboard populated in minutes.</p>
+  <a href="{{ url_for('auth.register') }}" class="btn btn-hero-primary btn-lg">Create free account</a>
+</div>
+
+<footer class="site-footer">
+  Wealthr. Built for clarity, not clutter.
+</footer>
+
+{% endblock %}

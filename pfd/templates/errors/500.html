@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Server error{% endblock %}
+{% block guest_content %}
+<div class="auth-wrap">
+  <div class="auth-card text-center">
+    <i class="fa-solid fa-triangle-exclamation fs-1 mb-3" style="color:var(--coral)"></i>
+    <h3>Something went wrong.</h3>
+    <p style="color:var(--text-muted)">We couldn't complete that request. Please try again.</p>
+    <div class="d-flex gap-2 justify-content-center mt-2">
+      <button onclick="window.location.reload()" class="btn btn-primary">Try again</button>
+      <a href="{{ url_for('landing') }}" class="btn btn-outline-secondary">Go home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="section-card card text-center mx-auto" style="max-width:480px;">
+  <i class="fa-solid fa-triangle-exclamation fs-1 mb-3" style="color:var(--coral)"></i>
+  <h3>Something went wrong.</h3>
+  <p style="color:var(--text-muted)">We couldn't complete that request. Please try again.</p>
+  <div class="d-flex gap-2 justify-content-center mt-2">
+    <button onclick="window.location.reload()" class="btn btn-primary">Try again</button>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary">Back to dashboard</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if mode == 'edit' else 'Add' }} Expense{% endblock %}
+{% block page_title %}{{ 'Edit' if mode == 'edit' else 'Add' }} Expense{% endblock %}
+{% block content %}
+<div class="section-card card mx-auto" style="max-width:560px;">
+  <form method="POST" novalidate data-loading-label="Saving...">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      <label class="form-label">Amount</label>
+      <div class="input-group">
+        <span class="input-group-text">₹</span>
+        {{ form.amount(class="form-control", placeholder="0.00") }}
+      </div>
+      {% for e in form.amount.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      {{ form.category_id(class="form-select") }}
+      {% for e in form.category_id.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      {{ form.description(class="form-control", placeholder="e.g. Grocery run") }}
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Date</label>
+        {{ form.date(class="form-control") }}
+        {% for e in form.date.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Payment Method</label>
+        {{ form.payment_method(class="form-select") }}
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-outline-secondary flex-grow-1">Cancel</a>
+      <button type="submit" class="btn btn-primary flex-grow-1">{{ 'Save changes' if mode == 'edit' else 'Add expense' }}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

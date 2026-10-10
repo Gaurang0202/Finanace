@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Savings Goals{% endblock %}
+{% block page_title %}Savings Goals{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('savings.add_goal') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i> New goal</a>
+</div>
+
+{% if goals %}
+<div class="row g-3">
+  {% for g in goals %}
+  <div class="col-md-6 col-lg-4">
+    <div class="goal-card h-100 d-flex flex-column">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <div class="goal-icon"><i class="fa-solid {{ g.icon }}"></i></div>
+          <div>
+            <div class="fw-semibold">{{ g.title }}</div>
+            {% if g.target_date %}<div class="small" style="color:var(--text-muted)">by {{ g.target_date.strftime('%d %b %Y') }}</div>{% endif %}
+          </div>
+        </div>
+        {% if g.is_completed %}<span class="category-pill bg-teal-soft">Achieved</span>{% endif %}
+      </div>
+
+      <div class="mb-1 d-flex justify-content-between small">
+        <span class="figure">₹{{ '{:,.0f}'.format(g.saved_amount) }}</span>
+        <span style="color:var(--text-muted)">of ₹{{ '{:,.0f}'.format(g.target_amount) }}</span>
+      </div>
+      <div class="progress mb-3"><div class="progress-bar bg-success" style="width: {{ g.progress_percent }}%"></div></div>
+
+      <div class="mt-auto d-flex gap-2">
+        {% if not g.is_completed %}
+        <button class="btn btn-sm btn-primary flex-grow-1" data-bs-toggle="modal" data-bs-target="#contribute-{{ g.id }}">Add funds</button>
+        {% endif %}
+        <a href="{{ url_for('savings.edit_goal', goal_id=g.id) }}" class="icon-btn"><i class="fa-solid fa-pen"></i></a>
+        <form action="{{ url_for('savings.delete_goal', goal_id=g.id) }}" method="POST" data-confirm-delete="this savings goal">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="icon-btn"><i class="fa-solid fa-trash"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="contribute-{{ g.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content themed-modal">
+        <form action="{{ url_for('savings.contribute', goal_id=g.id) }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="modal-header" style="border-color:var(--border)">
+            <h5 class="modal-title">Add funds to "{{ g.title }}"</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <label class="form-label">Amount</label>
+            <div class="input-group">
+              <span class="input-group-text">₹</span>
+              <input type="number" step="0.01" min="0.01" name="amount" class="form-control" required>
+            </div>
+          </div>
+          <div class="modal-footer" style="border-color:var(--border)">
+            <button type="submit" class="btn btn-primary">Add contribution</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="section-card card">
+  <div class="empty-state"><i class="fa-solid fa-piggy-bank"></i>
+    <h6 class="mb-1">Nothing here yet.</h6>
+    <p class="mb-3">Create a goal and your progress will appear here.</p>
+    <a href="{{ url_for('savings.add_goal') }}" class="btn btn-primary btn-sm">Create a goal</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

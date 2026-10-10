@@ -1,0 +1,39 @@
+<!-- Interactive product tour. Markup only -- static/js/onboarding.js drives all
+     positioning, spotlight movement and step logic. Hidden by default via
+     opacity/pointer-events in CSS so it never flashes before JS attaches. -->
+
+<div class="tour-welcome-card" id="tourWelcome">
+  <span class="brand-mark d-inline-flex mb-3"><i class="fa-solid fa-wave-square"></i></span>
+  <h3 class="mb-2">Welcome to Wealthr.</h3>
+  <p style="color:var(--text-muted)" class="mb-4">Let's take 60 seconds to show you around.</p>
+  <div class="d-flex gap-2 justify-content-center">
+    <button class="btn btn-outline-secondary" id="tourSkipBtn">Skip</button>
+    <button class="btn btn-primary" id="tourStartBtn">Start tour</button>
+  </div>
+</div>
+
+<div class="tour-scrim" id="tourScrim">
+  <div class="tour-spotlight" id="tourSpotlight"></div>
+</div>
+
+<div class="tour-tooltip" id="tourTooltip" role="dialog" aria-live="polite">
+  <div class="tour-progress" id="tourProgress"></div>
+  <h6 id="tourTitle"></h6>
+  <p id="tourText"></p>
+  <div class="tour-footer">
+    <span class="tour-step-count" id="tourStepCount"></span>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-secondary" id="tourSkipBtn2">Skip</button>
+      <button class="btn btn-sm btn-primary" id="tourNextBtn">Next</button>
+    </div>
+  </div>
+</div>
+
+<div class="tour-welcome-card" id="tourFinal">
+  <span class="brand-mark d-inline-flex mb-3"><i class="fa-solid fa-circle-check"></i></span>
+  <h3 class="mb-2">You're ready.</h3>
+  <p style="color:var(--text-muted)" class="mb-4">Everything you need is right here.</p>
+  <button class="btn btn-primary" id="tourEnterBtn">Enter dashboard</button>
+</div>
+
+<input type="hidden" id="onboardingCsrf" value="{{ csrf_token() }}">

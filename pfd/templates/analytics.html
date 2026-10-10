@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Financial Analytics{% endblock %}
+{% block content %}
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="section-card card">
+      <div class="section-title">Income vs Expense</div>
+      <div class="section-sub">Last 6 months</div>
+      <div class="chart-loading-wrap" style="height:200px;">
+        <canvas id="incomeExpenseChart" height="200"></canvas>
+        <div class="chart-loading-overlay hidden" id="incomeExpenseOverlay"><div class="skeleton skeleton-chart"></div></div>
+        <div class="chart-loading-note" id="incomeExpenseNote"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="section-card card">
+      <div class="section-title">Spending by Category</div>
+      <div class="section-sub">All-time breakdown</div>
+      <div class="chart-loading-wrap" style="height:220px;">
+        <canvas id="categoryChart" height="220"></canvas>
+        <div class="chart-loading-overlay hidden" id="categoryOverlay"><div class="skeleton skeleton-chart"></div></div>
+        <div class="chart-loading-note" id="categoryNote"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="section-card card">
+      <div class="section-title">Savings Trend</div>
+      <div class="section-sub">Net savings over the last 12 months</div>
+      <div class="chart-loading-wrap" style="height:200px;">
+        <canvas id="savingsTrendChart" height="200"></canvas>
+        <div class="chart-loading-overlay hidden" id="savingsTrendOverlay"><div class="skeleton skeleton-chart"></div></div>
+        <div class="chart-loading-note" id="savingsTrendNote"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="section-card card">
+      <div class="section-title">Yearly Comparison</div>
+      <div class="section-sub">Income vs expense by year</div>
+      <div class="chart-loading-wrap" style="height:220px;">
+        <canvas id="yearlyChart" height="220"></canvas>
+        <div class="chart-loading-overlay hidden" id="yearlyOverlay"><div class="skeleton skeleton-chart"></div></div>
+        <div class="chart-loading-note" id="yearlyNote"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

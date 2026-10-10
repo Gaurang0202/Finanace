@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ active_theme|default('light') }}" data-bs-theme="{{ active_theme|default('light') }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Dashboard{% endblock %} · Wealthr</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body class="{% if not current_user.is_authenticated %}guest-body{% endif %}">
+
+{% if current_user.is_authenticated %}
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar" data-tour="nav-sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-mark"><i class="fa-solid fa-wave-square"></i></span>
+      <span class="brand-text">Wealthr</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard.index') }}" class="nav-link {{ 'active' if request.endpoint == 'dashboard.index' }}">
+        <i class="fa-solid fa-grid-2"></i><span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('income.list_income') }}" class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('income.') }}">
+        <i class="fa-solid fa-sack-dollar"></i><span>Income</span>
+      </a>
+      <a href="{{ url_for('expenses.list_expenses') }}" class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('expenses.') }}">
+        <i class="fa-solid fa-receipt"></i><span>Expenses</span>
+      </a>
+      <a href="{{ url_for('budget.index') }}" class="nav-link {{ 'active' if request.endpoint == 'budget.index' }}">
+        <i class="fa-solid fa-chart-pie"></i><span>Budgets</span>
+      </a>
+      <a href="{{ url_for('savings.list_goals') }}" class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('savings.') }}">
+        <i class="fa-solid fa-piggy-bank"></i><span>Goals</span>
+      </a>
+      <a href="{{ url_for('analytics.index') }}" class="nav-link {{ 'active' if request.endpoint == 'analytics.index' }}">
+        <i class="fa-solid fa-chart-line"></i><span>Analytics</span>
+      </a>
+      <a href="{{ url_for('reports.index') }}" class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('reports.') }}">
+        <i class="fa-solid fa-file-export"></i><span>Reports</span>
+      </a>
+      {% if current_user.is_admin %}
+      <div class="nav-divider">Admin</div>
+      <a href="{{ url_for('admin.index') }}" class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('admin.') }}">
+        <i class="fa-solid fa-user-shield"></i><span>Admin Panel</span>
+      </a>
+      {% endif %}
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{{ url_for('profile.index') }}" class="nav-link {{ 'active' if request.endpoint == 'profile.index' }}">
+        <i class="fa-solid fa-user-gear"></i><span>Profile</span>
+      </a>
+      <a href="{{ url_for('auth.logout') }}" class="nav-link text-danger-soft">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="icon-btn d-lg-none" id="sidebarToggle" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="topbar-title">{% block page_title %}{% endblock %}</div>
+      <div class="topbar-actions">
+        <form action="{{ url_for('profile.toggle_theme') }}" method="POST" class="d-inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="icon-btn" title="Toggle theme" aria-label="Toggle light or dark theme">
+            <i class="fa-solid {{ 'fa-sun' if active_theme == 'dark' else 'fa-moon' }}"></i>
+          </button>
+        </form>
+        <a href="{{ url_for('notifications.index') }}" class="icon-btn position-relative" title="Notifications" data-tour="notifications">
+          <i class="fa-solid fa-bell"></i>
+          {% if unread_notifications and unread_notifications > 0 %}
+          <span class="notif-badge">{{ unread_notifications }}</span>
+          {% endif %}
+        </a>
+        <a href="{{ url_for('profile.index') }}" class="topbar-avatar" data-tour="profile" title="Profile &amp; settings">
+          {{ current_user.name[:1]|upper }}
+        </a>
+      </div>
+    </header>
+
+    <main class="content-area" data-tour="dashboard-overview">
+      {% include "partials/flash.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-bottom-nav">
+  <a href="{{ url_for('dashboard.index') }}" class="{{ 'active' if request.endpoint == 'dashboard.index' }}"><i class="fa-solid fa-grid-2"></i>Home</a>
+  <a href="{{ url_for('expenses.list_expenses') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('expenses.') }}"><i class="fa-solid fa-receipt"></i>Expenses</a>
+  <a href="{{ url_for('budget.index') }}" class="{{ 'active' if request.endpoint == 'budget.index' }}"><i class="fa-solid fa-chart-pie"></i>Budgets</a>
+  <a href="{{ url_for('savings.list_goals') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('savings.') }}"><i class="fa-solid fa-piggy-bank"></i>Goals</a>
+  <a href="{{ url_for('profile.index') }}" class="{{ 'active' if request.endpoint == 'profile.index' }}"><i class="fa-solid fa-user"></i>Profile</a>
+</nav>
+
+{% if show_onboarding and request.endpoint == 'dashboard.index' %}
+  {% include "partials/onboarding.html" %}
+{% endif %}
+
+{% else %}
+  <nav class="site-nav" id="siteNav">
+    <a href="{{ url_for('landing') }}" class="d-flex align-items-center gap-2">
+      <span class="brand-mark"><i class="fa-solid fa-wave-square"></i></span>
+      <span class="brand-text">Wealthr</span>
+    </a>
+    <div class="site-nav-links">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-hero-ghost btn-sm">Log in</a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-hero-primary btn-sm">Get started</a>
+    </div>
+  </nav>
+  {% include "partials/flash.html" %}
+  {% block guest_content %}{% endblock %}
+{% endif %}
+
+<div class="network-banner" id="networkBanner" role="status" aria-live="polite">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+  <span id="networkBannerText"></span>
+  <button type="button" class="retry-btn" id="networkRetryBtn">Try again</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='js/loading.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if current_user.is_authenticated and show_onboarding and request.endpoint == 'dashboard.index' %}
+<script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+{% endif %}
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

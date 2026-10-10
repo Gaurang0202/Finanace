@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Budgets{% endblock %}
+{% block page_title %}Budget Planner{% endblock %}
+{% block content %}
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="section-card card">
+      <div class="section-title">Set a budget</div>
+      <div class="section-sub">Create a monthly spending limit per category</div>
+      <form method="POST" novalidate data-loading-label="Saving...">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          {{ form.category_id(class="form-select") }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Budget Amount</label>
+          <div class="input-group">
+            <span class="input-group-text">₹</span>
+            {{ form.amount(class="form-control", placeholder="0.00") }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label class="form-label">Month</label>
+            {{ form.month(class="form-select") }}
+          </div>
+          <div class="col-6 mb-3">
+            <label class="form-label">Year</label>
+            {{ form.year(class="form-control") }}
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Save budget</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="section-card card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <div class="section-title">Budgets for {{ view_month }}/{{ view_year }}</div>
+          <div class="section-sub">Spending is checked live against these limits</div>
+        </div>
+      </div>
+      {% if rows %}
+        {% for b in rows %}
+        <div class="d-flex align-items-center gap-3 mb-3 pb-3" style="border-bottom:1px solid var(--border)">
+          <div class="goal-icon"><i class="fa-solid {{ b.icon }}"></i></div>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between small mb-1">
+              <span class="fw-semibold">{{ b.category }}</span>
+              <span class="figure">₹{{ '{:,.0f}'.format(b.spent) }} / ₹{{ '{:,.0f}'.format(b.budget) }}</span>
+            </div>
+            <div class="progress"><div class="progress-bar bg-{{ b.status }}" style="width: {{ b.percent }}%"></div></div>
+            <div class="d-flex justify-content-between small mt-1" style="color:var(--text-muted)">
+              <span>{{ b.percent }}% used</span><span>₹{{ '{:,.0f}'.format(b.remaining) }} remaining</span>
+            </div>
+          </div>
+          <form action="{{ url_for('budget.delete_budget', budget_id=b.id) }}" method="POST" data-confirm-delete="this budget">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="icon-btn"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="empty-state"><i class="fa-solid fa-chart-pie"></i><p>No budgets set for this month yet.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

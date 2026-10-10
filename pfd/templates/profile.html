@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block page_title %}Profile{% endblock %}
+{% block content %}
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="section-card card text-center">
+      <img src="{{ url_for('static', filename='uploads/' + current_user.profile_picture) if current_user.profile_picture != 'default.png' else url_for('static', filename='images/default-avatar.png') }}"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+           class="rounded-circle mb-3" style="width:96px;height:96px;object-fit:cover;">
+      <div class="topbar-avatar mx-auto mb-3" style="width:96px;height:96px;font-size:2rem;display:none;">{{ current_user.name[:1]|upper }}</div>
+      <h5 class="mb-0">{{ current_user.name }}</h5>
+      <p class="small" style="color:var(--text-muted)">{{ current_user.email }}</p>
+      {% if current_user.occupation %}<p class="small mb-2" style="color:var(--text-muted)"><i class="fa-solid fa-briefcase me-1"></i>{{ current_user.occupation }}</p>{% endif %}
+      <span class="category-pill bg-accent-soft mb-3">{{ current_user.role|capitalize }}</span>
+
+      <form action="{{ url_for('profile.upload_picture') }}" method="POST" enctype="multipart/form-data" class="mt-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="file" name="profile_picture" accept="image/*" class="form-control form-control-sm mb-2">
+        <button type="submit" class="btn btn-sm btn-outline-secondary w-100"><i class="fa-solid fa-upload me-1"></i>Update photo</button>
+      </form>
+    </div>
+
+    <div class="section-card card mt-3">
+      <div class="section-title">Financial Summary</div>
+      <div class="d-flex justify-content-between small py-2" style="border-bottom:1px solid var(--border)">
+        <span style="color:var(--text-muted)">Total Income</span><span class="figure text-success">₹{{ '{:,.0f}'.format(total_income) }}</span>
+      </div>
+      <div class="d-flex justify-content-between small py-2" style="border-bottom:1px solid var(--border)">
+        <span style="color:var(--text-muted)">Total Expenses</span><span class="figure text-danger">₹{{ '{:,.0f}'.format(total_expense) }}</span>
+      </div>
+      <div class="d-flex justify-content-between small py-2">
+        <span style="color:var(--text-muted)">Net Savings</span><span class="figure">₹{{ '{:,.0f}'.format(total_savings) }}</span>
+      </div>
+    </div>
+
+    <div class="section-card card mt-3">
+      <div class="section-title">Help</div>
+      <div class="section-sub">Replay the guided product tour anytime.</div>
+      <form action="{{ url_for('onboarding.replay') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-outline-secondary w-100"><i class="fa-solid fa-compass me-1"></i>Replay Product Tour</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="section-card card mb-3">
+      <div class="section-title">Account Settings</div>
+      <form method="POST" novalidate data-loading-label="Saving...">
+        {{ form.hidden_tag() }}
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Full name</label>
+            {{ form.name(class="form-control") }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Preferred currency</label>
+            {{ form.currency(class="form-select") }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Occupation</label>
+            {{ form.occupation(class="form-control", placeholder="e.g. Senior Software Engineer") }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Phone number</label>
+            {{ form.phone(class="form-control", placeholder="+91 98765 43210") }}
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label">Address</label>
+            {{ form.address(class="form-control", placeholder="City, State, Country") }}
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </form>
+    </div>
+
+    <div class="section-card card">
+      <div class="section-title">Change Password</div>
+      <form action="{{ url_for('profile.change_password') }}" method="POST" novalidate data-loading-label="Updating...">
+        {{ password_form.hidden_tag() }}
+        <div class="mb-3">
+          <label class="form-label">Current password</label>
+          {{ password_form.current_password(class="form-control") }}
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">New password</label>
+            {{ password_form.new_password(class="form-control") }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Confirm new password</label>
+            {{ password_form.confirm_password(class="form-control") }}
+          </div>
+        </div>
+        <button type="submit" class="btn btn-outline-secondary">Update password</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

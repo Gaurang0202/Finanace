@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Manage Categories{% endblock %}
+{% block page_title %}Manage Categories{% endblock %}
+{% block content %}
+
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="section-card card">
+      <div class="section-title">Add category</div>
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Type</label>
+          {{ form.type(class="form-select") }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Icon (Font Awesome class)</label>
+          {{ form.icon(class="form-control", placeholder="fa-tag") }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Color</label>
+          {{ form.color(class="form-control", type="color") }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Add category</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="section-card card mb-3">
+      <div class="section-title">Income categories</div>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        {% for c in income_cats %}
+        <div class="category-pill" style="background:{{ c.color }}22; color:{{ c.color }}">
+          <i class="fa-solid {{ c.icon }}"></i> {{ c.name }}
+          <form action="{{ url_for('admin.delete_category', category_id=c.id) }}" method="POST" class="d-inline ms-1" data-confirm-delete="the '{{ c.name }}' category">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm p-0 border-0 bg-transparent" style="color:inherit;"><i class="fa-solid fa-xmark"></i></button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="section-card card">
+      <div class="section-title">Expense categories</div>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        {% for c in expense_cats %}
+        <div class="category-pill" style="background:{{ c.color }}22; color:{{ c.color }}">
+          <i class="fa-solid {{ c.icon }}"></i> {{ c.name }}
+          <form action="{{ url_for('admin.delete_category', category_id=c.id) }}" method="POST" class="d-inline ms-1" data-confirm-delete="the '{{ c.name }}' category">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm p-0 border-0 bg-transparent" style="color:inherit;"><i class="fa-solid fa-xmark"></i></button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

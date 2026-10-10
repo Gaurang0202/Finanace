@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+{% block guest_content %}
+<div class="auth-wrap">
+  <div class="auth-card animate__animated animate__fadeInUp">
+    <div class="text-center mb-4">
+      <span class="brand-mark d-inline-flex mb-2"><i class="fa-solid fa-wave-square"></i></span>
+      <h3 class="mb-0">Create your account</h3>
+      <p style="color:var(--text-muted)" class="mb-0">Start tracking your money in minutes</p>
+    </div>
+    <form method="POST" novalidate data-loading-label="Creating account...">
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        <label class="form-label">Full name</label>
+        {{ form.name(class="form-control", placeholder="Jane Doe") }}
+        {% for e in form.name.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        {{ form.email(class="form-control", placeholder="you@example.com") }}
+        {% for e in form.email.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        {{ form.password(class="form-control", placeholder="At least 8 characters") }}
+        {% for e in form.password.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Confirm password</label>
+        {{ form.confirm_password(class="form-control", placeholder="Re-enter password") }}
+        {% for e in form.confirm_password.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary w-100 py-2">Create account</button>
+    </form>
+    <p class="text-center mt-4 mb-0 small">
+      Already have an account? <a href="{{ url_for('auth.login') }}" class="fw-semibold" style="color:var(--accent)">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Application Logs{% endblock %}
+{% block page_title %}Application Logs{% endblock %}
+{% block content %}
+
+<div class="section-card card">
+  <div class="section-sub">Most recent 200 log lines (production mode only)</div>
+  <pre class="p-3 rounded small" style="background:var(--surface-2); max-height:600px; overflow:auto; white-space:pre-wrap;">{% if lines %}{% for line in lines %}{{ line }}{% endfor %}{% else %}No logs yet. Logging is enabled once the app runs outside debug mode.{% endif %}</pre>
+</div>
+{% endblock %}

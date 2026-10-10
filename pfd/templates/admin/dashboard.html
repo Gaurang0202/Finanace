@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block page_title %}Admin Panel{% endblock %}
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon bg-accent-soft"><i class="fa-solid fa-users"></i></div>
+      <div class="stat-label">Total Users</div>
+      <div class="stat-value figure">{{ total_users }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon bg-teal-soft"><i class="fa-solid fa-sack-dollar"></i></div>
+      <div class="stat-label">Platform-wide Income</div>
+      <div class="stat-value figure">₹{{ '{:,.0f}'.format(total_income) }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon bg-coral-soft"><i class="fa-solid fa-receipt"></i></div>
+      <div class="stat-label">Platform-wide Expenses</div>
+      <div class="stat-value figure">₹{{ '{:,.0f}'.format(total_expense) }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex gap-3 flex-wrap">
+  <a href="{{ url_for('admin.users') }}" class="feature-card text-decoration-none" style="flex:1; min-width:220px;">
+    <i class="fa-solid fa-users-gear"></i><h6 class="mb-1">Manage Users</h6>
+    <p class="small mb-0" style="color:var(--text-muted)">View and deactivate accounts</p>
+  </a>
+  <a href="{{ url_for('admin.categories') }}" class="feature-card text-decoration-none" style="flex:1; min-width:220px;">
+    <i class="fa-solid fa-tags"></i><h6 class="mb-1">Manage Categories</h6>
+    <p class="small mb-0" style="color:var(--text-muted)">Add or remove global categories</p>
+  </a>
+  <a href="{{ url_for('admin.logs') }}" class="feature-card text-decoration-none" style="flex:1; min-width:220px;">
+    <i class="fa-solid fa-file-lines"></i><h6 class="mb-1">Application Logs</h6>
+    <p class="small mb-0" style="color:var(--text-muted)">View recent server activity</p>
+  </a>
+</div>
+{% endblock %}

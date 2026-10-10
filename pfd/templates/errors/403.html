@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Access denied{% endblock %}
+{% block guest_content %}
+<div class="auth-wrap">
+  <div class="auth-card text-center">
+    <i class="fa-solid fa-shield-halved fs-1 mb-3" style="color:var(--coral)"></i>
+    <h3>403 — Access denied</h3>
+    <p style="color:var(--text-muted)">You don't have permission to view this page.</p>
+    <a href="{{ url_for('landing') }}" class="btn btn-primary mt-2">Go home</a>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="section-card card text-center mx-auto" style="max-width:480px;">
+  <i class="fa-solid fa-shield-halved fs-1 mb-3" style="color:var(--coral)"></i>
+  <h3>403 — Access denied</h3>
+  <p style="color:var(--text-muted)">You don't have permission to view this page.</p>
+  <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary mt-2">Back to dashboard</a>
+</div>
+{% endblock %}

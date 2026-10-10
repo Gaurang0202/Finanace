@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block guest_content %}
+<div class="auth-wrap">
+  <div class="auth-card animate__animated animate__fadeInUp">
+    <div class="text-center mb-4">
+      <span class="brand-mark d-inline-flex mb-2"><i class="fa-solid fa-wave-square"></i></span>
+      <h3 class="mb-0">Welcome back</h3>
+      <p style="color:var(--text-muted)" class="mb-0">Log in to your Wealthr dashboard</p>
+    </div>
+    <form method="POST" novalidate data-loading-label="Logging in...">
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        {{ form.email(class="form-control", placeholder="you@example.com") }}
+        {% for e in form.email.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        {{ form.password(class="form-control", placeholder="••••••••") }}
+        {% for e in form.password.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check">
+          {{ form.remember(class="form-check-input") }}
+          <label class="form-check-label small" for="remember">Remember me</label>
+        </div>
+        <a href="{{ url_for('auth.forgot_password') }}" class="small">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 py-2">Log in</button>
+    </form>
+    <p class="text-center mt-4 mb-0 small">
+      New here? <a href="{{ url_for('auth.register') }}" class="fw-semibold" style="color:var(--accent)">Create an account</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

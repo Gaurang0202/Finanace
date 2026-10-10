@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Overview · {{ month_label }}{% endblock %}
+{% block content %}
+
+<!-- PRIMARY: hero metric + inline visualization -->
+<div class="row g-3 mb-3">
+  <div class="col-lg-8">
+    <div class="hero-metric-card h-100">
+      <div class="hm-label">Total Balance</div>
+      <div class="hm-value figure">₹<span data-count-to="{{ total_balance|round|int }}">0</span></div>
+      <div class="hm-badge">
+        <i class="fa-solid {{ 'fa-arrow-trend-up' if savings_this_month >= 0 else 'fa-arrow-trend-down' }}"></i>
+        {{ savings_rate }}% saved this month
+      </div>
+      <div class="mini-chart-wrap mt-4 chart-loading-wrap">
+        <canvas id="dashSparkline"></canvas>
+        <div class="chart-loading-overlay hidden" id="dashSparklineOverlay">
+          <div class="skeleton skeleton-chart" style="background: rgba(255,255,255,.06);"></div>
+        </div>
+        <div class="chart-loading-note" id="dashSparklineNote"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="row g-3 h-100">
+      <div class="col-12">
+        <div class="stat-card">
+          <div class="stat-icon bg-teal-soft"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          <div class="stat-label">Income this month</div>
+          <div class="stat-value figure">₹{{ '{:,.0f}'.format(total_income) }}</div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="stat-card">
+          <div class="stat-icon bg-coral-soft"><i class="fa-solid fa-arrow-trend-down"></i></div>
+          <div class="stat-label">Expenses this month</div>
+          <div class="stat-value figure">₹{{ '{:,.0f}'.format(total_expense) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="quick-actions mb-4">
+  <a href="{{ url_for('expenses.add_expense') }}" class="quick-action-btn" data-tour="primary-action">
+    <i class="fa-solid fa-receipt"></i> Add Expense
+  </a>
+  <a href="{{ url_for('income.add_income') }}" class="quick-action-btn">
+    <i class="fa-solid fa-sack-dollar"></i> Add Income
+  </a>
+  <a href="{{ url_for('budget.index') }}" class="quick-action-btn">
+    <i class="fa-solid fa-chart-pie"></i> Set Budget
+  </a>
+  <a href="{{ url_for('savings.add_goal') }}" class="quick-action-btn">
+    <i class="fa-solid fa-piggy-bank"></i> New Goal
+  </a>
+</div>
+
+<!-- ACTIVITY + INSIGHTS -->
+<div class="row g-3 mb-3">
+  <div class="col-lg-7">
+    <div class="section-card card h-100">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <div class="section-title">Recent Transactions</div>
+          <div class="section-sub">Your latest income and expense entries</div>
+        </div>
+        <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-sm btn-outline-secondary">View all</a>
+      </div>
+      {% if recent %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead><tr><th>Category</th><th>Description</th><th>Date</th><th class="text-end">Amount</th></tr></thead>
+          <tbody>
+          {% for r in recent %}
+            <tr>
+              <td><span class="category-pill" style="background:{{ r.obj.category.color }}22; color:{{ r.obj.category.color }}"><i class="fa-solid {{ r.obj.category.icon }}"></i> {{ r.obj.category.name }}</span></td>
+              <td class="small" style="color:var(--text-muted)">{{ r.obj.description or '—' }}</td>
+              <td class="small">{{ r.obj.date.strftime('%d %b %Y') }}</td>
+              <td class="text-end figure {{ 'text-success' if r.type == 'income' else 'text-danger' }}">
+                {{ '+' if r.type == 'income' else '-' }}₹{{ '{:,.0f}'.format(r.obj.amount) }}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <h6 class="mb-1">Nothing here yet.</h6>
+        <p class="mb-3">Once you log an income or expense, your activity will appear here.</p>
+        <a href="{{ url_for('expenses.add_expense') }}" class="btn btn-primary btn-sm">Add your first expense</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="section-card card h-100">
+      <div class="section-title">AI Financial Insights</div>
+      <div class="section-sub">Personalized, generated from your data</div>
+      {% for i in insights %}
+      <div class="insight-row">
+        <i class="fa-solid {{ i.icon }} text-{{ 'success' if i.type=='success' else 'warning' if i.type in ['warning','danger'] else 'primary' }}"></i>
+        <div class="small">{{ i.text }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- BUDGETS + GOALS -->
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="section-card card h-100">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <div class="section-title">Budget Status</div>
+          <div class="section-sub">{{ month_label }}</div>
+        </div>
+        <a href="{{ url_for('budget.index') }}" class="btn btn-sm btn-outline-secondary">Manage budgets</a>
+      </div>
+      {% if budget_rows %}
+        {% for b in budget_rows %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small mb-1">
+            <span class="fw-semibold">{{ b.category }}</span>
+            <span class="figure" style="color:var(--text-muted)">₹{{ '{:,.0f}'.format(b.spent) }} / ₹{{ '{:,.0f}'.format(b.budget) }}</span>
+          </div>
+          <div class="progress"><div class="progress-bar bg-{{ b.status }}" style="width: {{ b.percent }}%"></div></div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="empty-state">
+        <i class="fa-solid fa-chart-pie"></i>
+        <h6 class="mb-1">Nothing here yet.</h6>
+        <p class="mb-3">Set a monthly budget and we'll track your spending against it automatically.</p>
+        <a href="{{ url_for('budget.index') }}" class="btn btn-primary btn-sm">Set a budget</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="section-card card h-100">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="section-title">Savings Goals</div>
+        <a href="{{ url_for('savings.list_goals') }}" class="btn btn-sm btn-outline-secondary">View all</a>
+      </div>
+      {% if goals %}
+        {% for g in goals %}
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="goal-icon"><i class="fa-solid {{ g.icon }}"></i></div>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between small"><span class="fw-semibold">{{ g.title }}</span><span>{{ g.progress_percent }}%</span></div>
+            <div class="progress mt-1"><div class="progress-bar bg-success" style="width: {{ g.progress_percent }}%"></div></div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="empty-state">
+        <i class="fa-solid fa-piggy-bank"></i>
+        <h6 class="mb-1">Nothing here yet.</h6>
+        <p class="mb-3">Create a savings goal to start tracking progress toward it.</p>
+        <a href="{{ url_for('savings.add_goal') }}" class="btn btn-primary btn-sm">Create a goal</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+// Compact sparkline for the hero metric card, reusing the existing savings-trend API.
+// Wrapped in the shared timed-loading helper so a slow connection shows a
+// skeleton + contextual message instead of a blank canvas, while a fast
+// response never flashes anything at all.
+(function () {
+  const overlay = document.getElementById("dashSparklineOverlay");
+  const note = document.getElementById("dashSparklineNote");
+
+  const render = (data) => {
+    const ctx = document.getElementById("dashSparkline");
+    if (!ctx || !window.Chart) return;
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: data.labels,
+        datasets: [{
+          data: data.savings, borderColor: "#a29bfe", borderWidth: 2,
+          pointRadius: 0, tension: 0.4, fill: true,
+          backgroundColor: "rgba(162,155,254,0.15)",
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false } },
+        elements: { line: { borderJoinStyle: "round" } },
+      },
+    });
+  };
+
+  if (window.WealthrLoading) {
+    window.WealthrLoading.withTimedLoading(
+      overlay, note,
+      () => fetch("/api/charts/savings-trend").then((r) => r.json()),
+      render
+    );
+  } else {
+    fetch("/api/charts/savings-trend").then((r) => r.json()).then(render).catch(() => {});
+  }
+})();
+</script>
+{% endblock %}

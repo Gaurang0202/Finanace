@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Manage Users{% endblock %}
+{% block page_title %}Manage Users{% endblock %}
+{% block content %}
+
+<div class="section-card card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.name }}</td>
+        <td class="small">{{ u.email }}</td>
+        <td><span class="category-pill bg-accent-soft">{{ u.role }}</span></td>
+        <td class="small">{{ u.created_at.strftime('%d %b %Y') }}</td>
+        <td>
+          {% if u.is_active_account %}<span class="category-pill bg-teal-soft">Active</span>
+          {% else %}<span class="category-pill bg-coral-soft">Inactive</span>{% endif %}
+        </td>
+        <td class="text-end">
+          <form action="{{ url_for('admin.toggle_active', user_id=u.id) }}" method="POST" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" {{ 'disabled' if u.id == current_user.id }}>
+              {{ 'Deactivate' if u.is_active_account else 'Activate' }}
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
